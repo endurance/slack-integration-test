@@ -27,6 +27,9 @@ export class ProfileEntity {
   display_name_normalized: string;
   
   @Column({ nullable: true})
+  fields: string;
+  
+  @Column({ nullable: true})
   status_text: string;
   
   @Column({ nullable: true})
@@ -37,6 +40,24 @@ export class ProfileEntity {
   
   @Column({ nullable: true})
   avatar_hash: string;
+  
+  @Column({ nullable: true})
+  always_active: boolean;
+  
+  @Column({ nullable: true})
+  first_name: string;
+  
+  @Column({ nullable: true})
+  last_name: string;
+  
+  @Column({ nullable: true })
+  image_original: string;
+  
+  @Column({ nullable: true })
+  bot_id: string;
+  
+  @Column({ nullable: true })
+  is_custom_image: boolean;
   
   @Column({ nullable: true})
   image_24: string;
@@ -57,8 +78,14 @@ export class ProfileEntity {
   image_512: string;
   
   @Column({ nullable: true})
+  image_1024: string;
+  
+  @Column({ nullable: true})
   status_text_canonical: string;
   
   @Column({ nullable: true})
   team: string;
+  
+  @Column({ nullable: true })
+  api_app_id: string
 }

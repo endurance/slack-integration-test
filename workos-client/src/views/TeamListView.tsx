@@ -17,7 +17,7 @@ export const TeamListView: React.FC = () => {
   }, [refresh]);
 
   return (
-    <Box>
+    <Box width={800}>
       <SyncButton onClick={handleSyncClicked}/>
       <TeamList users={users} />
     </Box>

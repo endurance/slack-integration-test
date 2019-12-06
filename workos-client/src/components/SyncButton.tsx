@@ -14,7 +14,7 @@ export const SyncButton = ({ onClick }: Props) => {
     }
   }
   return (
-    <Button onClick={click}>Sync users</Button>
+    <Button variant={'contained'} color={'primary'} onClick={click}>Sync users</Button>
   );
 };
 
