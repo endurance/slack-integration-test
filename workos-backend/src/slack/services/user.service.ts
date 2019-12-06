@@ -50,7 +50,8 @@ export class UserService {
     const users = await this._slackClient.users.list();
     // @ts-ignore
     return users.members.map(x => {
-      const object = { slack_id: x.id, real_name: x.real_name, name: x.name };
+      const object = { ...x, slack_id: x.id };
+      delete object.id;
       return plainToClass(UserEntity, object);
     });
   }
