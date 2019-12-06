@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from "./db/database.module";
-import { EventController } from "./slack/controllers/event.controller";
+import { SlackModule } from "./slack/slack.module";
 
 @Module({
   imports: [
     DatabaseModule,
-    EventController,
+    SlackModule,
   ],
 })
 export class MainAppModule {}
