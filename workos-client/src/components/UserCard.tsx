@@ -11,9 +11,10 @@ import {
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { ProfileDetails } from "./ProfileDetails";
 import classnames from "classnames";
+import { UserDTO } from "../dto/user.dto";
 
 type Props = {
-  user: any;
+  user: UserDTO;
 }
 
 const useStyles = makeStyles({

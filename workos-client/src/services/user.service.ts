@@ -1,12 +1,5 @@
 import { apiClient } from "./api/axiosClient";
-
-export class UserDTO {
-  id!: number;
-  slack_id!: string;
-  name!: string;
-  real_name!: string;
-}
-
+import { UserDTO } from "../dto/user.dto";
 
 export const syncUsers = async () => {
   await apiClient.post('/user/sync');

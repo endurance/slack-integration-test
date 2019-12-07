@@ -3,9 +3,10 @@ import { Box } from "@material-ui/core";
 import { getUsers } from "../services/user.service";
 import { UserCardList } from "../components/UserCardList";
 import { appSocket } from "../appSocket";
+import { UserDTO } from "../dto/user.dto";
 
 export const TeamListView: React.FC = () => {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<UserDTO[]>([]);
   
   useEffect(() => {
     getUsers().then(setUsers);
