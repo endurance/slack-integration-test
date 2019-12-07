@@ -66,7 +66,7 @@ export class UserEntity {
   @Column({nullable: false})
   profile_id: number;
   
-  @OneToOne(type => ProfileEntity, {cascade: true, eager: true})
+  @OneToOne(type => ProfileEntity, {cascade: ['insert', 'update'], eager: true})
   @JoinColumn({name: "profile_id"})
   profile: ProfileEntity;
 }

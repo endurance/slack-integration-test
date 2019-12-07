@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@material-ui/core";
-import { SyncButton } from "../components/SyncButton";
-import { TeamList } from "../components/TeamList";
 import { getUsers } from "../services/user.service";
+import { UserCardList } from "../components/UserCardList";
+import { appSocket } from "../appSocket";
 
 export const TeamListView: React.FC = () => {
-  const [refresh, toggleRefresh] = useState<boolean>(false);
-  const [users, setUsers] = useState();
-
-  function handleSyncClicked() {
-    toggleRefresh(!refresh);
-  }
-
+  const [users, setUsers] = useState<any[]>([]);
+  
   useEffect(() => {
-    getUsers().then(setUsers)
-  }, [refresh]);
-
+    getUsers().then(setUsers);
+  }, []);
+  
+  useEffect(() => {
+    appSocket.on('user_changed', async () =>{
+      const users = await getUsers();
+      setUsers(users);
+    });
+  }, []);
+  
   return (
     <Box width={800}>
-      <SyncButton onClick={handleSyncClicked}/>
-      <TeamList users={users} />
+      <UserCardList users={users}/>
     </Box>
   );
 };

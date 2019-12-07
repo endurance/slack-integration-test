@@ -1,7 +1,4 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
-import { SlackClientService } from "../services/slack-client.service";
-import { plainToClass } from "class-transformer";
-import { UserEntity } from "../../db/entities/user.entity";
 import { UserService } from "../services/user.service";
 
 interface SlackEvent {
@@ -10,7 +7,7 @@ interface SlackEvent {
   type: string,
 }
 
-@Controller("/slack")
+@Controller("/user")
 export class UserController {
   
   constructor(
@@ -22,9 +19,13 @@ export class UserController {
     return await this._userService.syncUsers();
   }
   
-  @Get('/list')
+  @Get("/list")
   public async getUsers() {
-    return this._userService.getUsers();
+    const users = await this._userService.getUsers();
+    if (!users || users.length === 0) {
+      return await this._userService.syncUsers();
+    }
+    return users;
   }
   
 }

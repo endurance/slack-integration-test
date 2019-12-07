@@ -9,10 +9,10 @@ export class UserDTO {
 
 
 export const syncUsers = async () => {
-  await apiClient.post('/slack/sync');
+  await apiClient.post('/user/sync');
 };
 
 export const getUsers = async () => {
-  const response = await apiClient.get<UserDTO[]>('/slack/list');
+  const response = await apiClient.get<UserDTO[]>('/user/list');
   return response.data;
 };

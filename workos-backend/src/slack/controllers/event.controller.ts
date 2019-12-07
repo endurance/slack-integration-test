@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import { SlackClientService } from "../services/slack-client.service";
 import { UserService } from "../services/user.service";
+import { EventsGateway } from "../ws-gateway/event.gateway";
 
 interface SlackEvent {
   token: string,
@@ -11,10 +12,11 @@ interface SlackEvent {
 
 @Controller("/event")
 export class EventController {
-  
+
   constructor(
     private readonly _slackClient: SlackClientService,
     private readonly _userService: UserService,
+    private readonly _eventGateway: EventsGateway,
   ) {}
   
   @Post("/receive")
@@ -24,7 +26,8 @@ export class EventController {
     }
     if (body.event.type === 'user_change') {
       const userData = body.event.user;
-      return await this._userService.saveUser(userData);
+      const savedUser = await this._userService.saveUser(userData);
+      return this._eventGateway.userChanged(savedUser);
     }
   }
 }

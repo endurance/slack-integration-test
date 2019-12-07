@@ -6,7 +6,7 @@ type Props = {
   users: UserDTO[]
 }
 
-function getDisplayColumns(users: any[]=[]) {
+function getDisplayColumns(users: any[] = []) {
   const defaultColumns = ["id", "slack_id", "real_name", "name"];
   if (users.length === 0) {
     return defaultColumns as string[];

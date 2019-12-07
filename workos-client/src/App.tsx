@@ -1,13 +1,13 @@
 import React from "react";
-import { CssBaseline } from "@material-ui/core";
+import { Box, CssBaseline } from "@material-ui/core";
 import { TeamListView } from "./views/TeamListView";
 
 const App: React.FC = () => {
   return (
-    <div>
+    <Box>
       <CssBaseline/>
       <TeamListView/>
-    </div>
+    </Box>
   );
 };
 
