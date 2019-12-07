@@ -1,0 +1,89 @@
+version: 2.1
+orbs:
+  gcp-cli: circleci/gcp-cli@1.8.3
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: circleci/node:12
+jobs:
+  test-backend:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: cd workos-backend
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-back-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-back-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-back-dependencies-{{ checksum "package.json" }}
+      - run: npx tsc -p tsconfig.json
+      - run: npm run test
+      - persist_to_workspace:
+          root: ~/repo/workos-backend
+          paths: .
+  test-client:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: cd workos-client
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-client-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-client-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-client-dependencies-{{ checksum "package.json" }}
+      - run: npx tsc -p tsconfig.json
+      - run: npm run test
+      - persist_to_workspace:
+          root: ~/repo/workos-client
+          paths: .
+  deploy-backend:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: ./install_googlecli.sh
+      - run: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+      - run: gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+      - run: gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+      - run: gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+      - run: gcloud app deploy
+  deploy-client:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: ./install_googlecli.sh
+      - run: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+      - run: gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+      - run: gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+      - run: gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+workflows:
+  version: 2.1
+  deployment:
+    jobs:
+      - test-backend
+      - test-client
+      - deploy-backend:
+          requires:
+            - test-backend
+          filters:
+            branches:
+              only:
+                - master
+      - deploy-client:
+          requires:
+            - test-client
+          filters:
+            branches:
+              only:
+                - master

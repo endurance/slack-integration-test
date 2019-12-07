@@ -1,12 +1,15 @@
 import { Module } from "@nestjs/common";
-import { ConfigService } from "./config.service";
+import { ConfigOptions, ConfigService } from "./config.service";
+
+const configOptions = new ConfigOptions();
+configOptions.protectedKeys = ['DB_PASSWORD', 'SLACK_TOKEN'];
 
 @Module({
   imports: [],
   providers: [
     {
       provide: "CONFIG_OPTIONS",
-      useValue: {},
+      useValue: configOptions,
     },
     ConfigService,
   ],

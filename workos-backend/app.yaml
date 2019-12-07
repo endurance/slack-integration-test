@@ -1,0 +1,7 @@
+service: workos-prod
+env: flex
+runtime: custom
+manual_scaling:
+  instances: 1
+beta_settings:
+  cloud_sql_instances: endurance-test-ca1fb:us-central1:workos-production
