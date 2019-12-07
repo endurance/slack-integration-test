@@ -1,4 +1,3 @@
-service: workos-prod
 env: flex
 runtime: custom
 manual_scaling:
