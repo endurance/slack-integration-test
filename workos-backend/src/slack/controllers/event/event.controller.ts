@@ -1,19 +1,19 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import { SlackClientService } from "../services/slack-client.service";
-import { UserService } from "../services/user.service";
-import { EventsGateway } from "../ws-gateway/event.gateway";
-import { UserEntity } from "../../db/entities/user.entity";
+import { SlackClientService } from "../../services/slack-client.service";
+import { UserService } from "../../services/user.service";
+import { EventsGateway } from "../../ws-gateway/event.gateway";
+import { UserEntity } from "../../../db/entities/user.entity";
 
-interface SlackEvent {
-  token: string,
-  challenge: string,
-  type: string,
+export class SlackEvent {
+  token: string;
+  challenge: string;
+  type: string;
   event: any;
 }
 
 @Controller("/event")
 export class EventController {
-
+  
   constructor(
     private readonly _slackClient: SlackClientService,
     private readonly _userService: UserService,
@@ -25,7 +25,7 @@ export class EventController {
     if (body.challenge) {
       return body.challenge;
     }
-    if (body.event.type === 'user_change') {
+    if (body.event.type === "user_change") {
       const userData = body.event.user as UserEntity;
       const savedUser = await this._userService.saveRawUser(userData);
       return this._eventGateway.userChanged(savedUser);

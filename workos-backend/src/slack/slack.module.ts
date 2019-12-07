@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { EventController } from "./controllers/event.controller";
+import { EventController } from "./controllers/event/event.controller";
 import { ConfigService } from "../config/config.service";
 import { SlackClientService } from "./services/slack-client.service";
 import { ConfigModule } from "../config/config.module";

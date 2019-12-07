@@ -10,20 +10,9 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - run: cd workos-backend
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-back-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-back-dependencies-
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-back-dependencies-{{ checksum "package.json" }}
-      - run: npx tsc -p tsconfig.json
-      - run: npm run test
+      - run: cd workos-backend && npm install
+      - run: cd workos-backend && npx tsc -p tsconfig.json
+      - run: cd workos-backend && npm run test
       - persist_to_workspace:
           root: ~/repo/workos-backend
           paths: .
@@ -31,20 +20,9 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - run: cd workos-client
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-client-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-client-dependencies-
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-client-dependencies-{{ checksum "package.json" }}
-      - run: npx tsc -p tsconfig.json
-      - run: npm run test
+      - run: cd workos-client && npm install
+      - run: cd workos-client && npx tsc -p tsconfig.json
+      - run: cd workos-client && npm run test
       - persist_to_workspace:
           root: ~/repo/workos-client
           paths: .
@@ -58,15 +36,6 @@ jobs:
       - run: gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
       - run: gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
       - run: gcloud app deploy
-  deploy-client:
-    <<: *defaults
-    steps:
-      - checkout
-      - run: ./install_googlecli.sh
-      - run: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
-      - run: gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-      - run: gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-      - run: gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
 workflows:
   version: 2.1
   deployment:
