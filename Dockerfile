@@ -13,12 +13,17 @@ COPY . /app/
 # as well.
 # This command will also cat the npm-debug.log file after the
 # build, if it exists.
-RUN npm install -g @nestjs/cli@6.11.1 && \
-    npm install --unsafe-perm || \
+RUN cd workos-backend && npm install --unsafe-perm || \
   ((if [ -f npm-debug.log ]; then \
       cat npm-debug.log; \
     fi) && false)
 
+RUN cd workos-client && npm install --unsafe-perm || \
+  ((if [ -f npm-debug.log ]; then \
+      cat npm-debug.log; \
+    fi) && false)
+
+RUN npm install -g @nestjs/cli@6.11.1
 RUN cd workos-backend && npm run build
 RUN cd workos-client && npm run build
 RUN cp -R workos-client/build workos-backend/dist
