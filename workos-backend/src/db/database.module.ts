@@ -4,9 +4,11 @@ import { LoggerModule } from '../logger/logger.module';
 import { ConfigService } from "../config/config.service";
 import { createDBOptions } from "./typeorm.config";
 import { ConfigModule } from "../config/config.module";
+import { MigrationService } from "./services/migration.service";
 
 @Module({
   imports: [
+    ConfigModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule, LoggerModule],
       inject: [ConfigService, Logger],
@@ -14,7 +16,7 @@ import { ConfigModule } from "../config/config.module";
     }),
     LoggerModule,
   ],
+  providers: [MigrationService]
 })
 export class DatabaseModule {
-
 }
