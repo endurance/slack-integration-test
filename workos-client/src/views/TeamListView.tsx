@@ -5,17 +5,20 @@ import { UserCardList } from "../components/UserCardList";
 import { appSocket } from "../appSocket";
 import { UserDTO } from "../dto/user.dto";
 
+
 export const TeamListView: React.FC = () => {
   const [users, setUsers] = useState<UserDTO[]>([]);
   
-  useEffect(() => {
+  const initialize = () => {
     getUsers().then(setUsers);
-  }, []);
+  };
   
   useEffect(() => {
+    // called once
+    initialize();
     appSocket.on('user_changed', async () =>{
-      const users = await getUsers();
-      setUsers(users);
+      // called every time user changes
+      initialize();
     });
   }, []);
   

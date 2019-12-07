@@ -9,9 +9,9 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { ProfileDetails } from "./ProfileDetails";
+import { ProfileDetails } from "../ProfileDetails";
 import classnames from "classnames";
-import { UserDTO } from "../dto/user.dto";
+import { UserDTO } from "../../dto/user.dto";
 
 type Props = {
   user: UserDTO;
@@ -29,8 +29,9 @@ const useStyles = makeStyles({
 export const UserCard = ({user}: Props) => {
   const {disabled, container} = useStyles();
   const disabledClass = user.deleted && disabled;
+  const testId = `usercard-${user.id}`;
   return (
-    <Box m={2} className={classnames(container, disabledClass)}>
+    <Box m={2} className={classnames(container, disabledClass)} data-testid={testId}>
       <ExpansionPanel>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
           <CardHeader

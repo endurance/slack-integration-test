@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserCard } from "./UserCard";
+import { UserCard } from "./UserCard/UserCard";
 import { UserDTO } from "../dto/user.dto";
 
 type Props = {
