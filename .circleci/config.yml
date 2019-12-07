@@ -26,7 +26,7 @@ jobs:
       - persist_to_workspace:
           root: ~/repo/workos-client
           paths: .
-  deploy-backend:
+  deploy:
     <<: *defaults
     steps:
       - checkout
@@ -42,15 +42,9 @@ workflows:
     jobs:
       - test-backend
       - test-client
-      - deploy-backend:
+      - deploy:
           requires:
             - test-backend
-          filters:
-            branches:
-              only:
-                - master
-      - deploy-client:
-          requires:
             - test-client
           filters:
             branches:
