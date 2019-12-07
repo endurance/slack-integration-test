@@ -22,41 +22,56 @@ export class UserService {
     return await this._userRepo.find();
   }
   
-  public async saveUser(userData: any) {
-    const slack_id = userData.id;
-    userData.slack_id = slack_id;
-    delete userData.id;
-    this._logger.log(`Working with Slack ID ${slack_id}`);
-    const dbUser = await this._userRepo.findOne({
+  public async findUsersBySlackIds(slackIds) {
+    return await this._userRepo.find({
       where: {
-        slack_id
+        slack_id: In(slackIds),
       },
     });
+  }
+  
+  public async findOneUserBySlackId(slack_id) {
+    return await this._userRepo.findOne({
+      where: {
+        slack_id,
+      },
+    });
+  }
+  
+  public async saveRawUser(rawUserData: UserEntity) {
+    const slack_id = rawUserData.id as unknown as string;
+    rawUserData.slack_id = slack_id;
+    delete rawUserData.id;
+    
+    this._logger.log(`Working with Slack ID ${slack_id}`);
+    const dbUser = await this.findOneUserBySlackId(slack_id);
+    
     await this._db.transaction(async (em) => {
       if (dbUser) {
         this._logger.log(`Updating Slack ID ${slack_id}`);
-        userData.profile.id = dbUser.profile.id;
-        await this._updateUser(em,[userData]);
+        rawUserData.profile.id = dbUser.profile.id;
+        await this._updateUser(em, [rawUserData]);
       } else {
         this._logger.log(`Saving for Slack ID ${slack_id}`);
-        await em.save(UserEntity, userData);
+        await em.save(UserEntity, rawUserData);
       }
     });
-    return await this._userRepo.findOne({
-      where: {
-        slack_id
-      },
-    });
+    
+    return await this.findOneUserBySlackId(slack_id);
   }
   
   public async syncUsers() {
     const fromSlackEntities = await this._getSlackUsers();
     const slackIds = fromSlackEntities.map((x) => x.slack_id);
-    const dbEntities = await this._userRepo.find({
-      where: {
-        slack_id: In(slackIds),
-      },
+    const dbEntities = await this.findUsersBySlackIds(slackIds);
+    const {updates, saves} = this._findInsertAndUpdateObjects(fromSlackEntities, dbEntities);
+    return await this._db.transaction(async (em) => {
+      await this._updateUser(em, updates);
+      return await em.save(UserEntity, saves);
     });
+  };
+  
+  private _findInsertAndUpdateObjects(fromSlackEntities: UserEntity[], dbEntities: UserEntity[]) {
     const updates = [];
     const saves = [];
     fromSlackEntities.forEach(slack => {
@@ -68,11 +83,8 @@ export class UserService {
         saves.push(slack);
       }
     });
-    return await this._db.transaction(async (em) => {
-      await this._updateUser(em, updates);
-      return await em.save(UserEntity, saves);
-    });
-  };
+    return {updates, saves};
+  }
   
   private async _updateUser(em: EntityManager, entities: UserEntity[]) {
     for (const u of entities) {
@@ -82,10 +94,12 @@ export class UserService {
   }
   
   private async _getSlackUsers() {
-    const users = await this._slackClient.users.list();
-    // @ts-ignore
-    return users.members.map(x => {
-      const object = { ...x, slack_id: x.id };
+    const slackAPIUsers = await this._slackClient.users.list();
+    
+    const users = slackAPIUsers.members as UserEntity[];
+    
+    return users.map(x => {
+      const object = {...x, slack_id: x.id};
       delete object.id;
       return plainToClass(UserEntity, object);
     });

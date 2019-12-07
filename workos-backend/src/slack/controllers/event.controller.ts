@@ -2,6 +2,7 @@ import { Body, Controller, Post } from "@nestjs/common";
 import { SlackClientService } from "../services/slack-client.service";
 import { UserService } from "../services/user.service";
 import { EventsGateway } from "../ws-gateway/event.gateway";
+import { UserEntity } from "../../db/entities/user.entity";
 
 interface SlackEvent {
   token: string,
@@ -25,8 +26,8 @@ export class EventController {
       return body.challenge;
     }
     if (body.event.type === 'user_change') {
-      const userData = body.event.user;
-      const savedUser = await this._userService.saveUser(userData);
+      const userData = body.event.user as UserEntity;
+      const savedUser = await this._userService.saveRawUser(userData);
       return this._eventGateway.userChanged(savedUser);
     }
   }
