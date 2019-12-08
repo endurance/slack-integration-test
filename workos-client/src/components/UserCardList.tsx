@@ -7,9 +7,11 @@ type Props = {
 }
 
 export const UserCardList = ({users}: Props) => {
+  const dtos = [...users];
+  dtos.sort((a, b) => a.updated > b.updated ? -1 : 1);
   return (
     <>
-      {(users || []).map(user => {
+      {(dtos || []).map(user => {
         return <UserCard key={user.id} user={user} />
       })}
     </>
