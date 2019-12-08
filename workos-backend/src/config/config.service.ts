@@ -94,7 +94,6 @@ export class ConfigService {
       this.envConfig = {
         ...this.envConfig,
         ...localCfg,
-        
       };
     }
   }
