@@ -11,21 +11,34 @@ export class ConfigOptions {
 @Injectable()
 export class ConfigService {
   private readonly envPath = `${process.env.NODE_ENV || 'development'}.env`;
-  private readonly envConfig: Record<string, string>;
+  private envConfig: Record<string, string>;
   private readonly protectedKeys: string[] = [];
   private readonly datastore: Datastore;
 
   constructor(@Inject('CONFIG_OPTIONS') options= new ConfigOptions()) {
     const { filePath, protectedKeys } = options;
+    this._parseCfg(filePath);
+    this.datastore = new Datastore({ namespace: this.getSync('ENV_SECRET_NAMESPACE') });
+    this.protectedKeys = protectedKeys || [];
+    console.log(this.envConfig);
+  }
+
+  private _parseCfg(filePath) {
     if (filePath) {
       this.envConfig = dotenv.parse(fs.readFileSync(filePath));
     } else {
       this.envConfig = dotenv.parse(fs.readFileSync(this.envPath));
     }
-    this.datastore = new Datastore({ namespace: this.getSync('ENV_SECRET_NAMESPACE') });
-    this.protectedKeys = protectedKeys || [];
+    if (this.isDevelopmentEnv()) {
+      const localCfg = dotenv.parse(fs.readFileSync(`${this.envPath}.local`));
+      this.envConfig = {
+        ...this.envConfig,
+        ...localCfg,
+        
+      }
+    }
   }
-
+  
   async get(key: string) {
     if (this.protectedKeys.includes(key) && this.isDeployedEnv()) {
       const value = await this._getProtectedValue(key);
