@@ -1,5 +1,5 @@
 
-
+## General Environment Setup
 Setup your database. Docker/Docker-Compose must be installed.
 
 ```bash
@@ -15,11 +15,18 @@ In both directories, run
 npm install
 ```
 
-Get your access token, and put it into your **development.env** under SLACK_TOKEN in the backend
+## Workos-Backend
+### Setup Slack Token Configuration
+Obtain the Slack Access Token.
+
+Create a new file named **development.env.local**
+
+Apply the token as follows below. 
 ```bash
 SLACK_TOKEN = xoxp_******
 ```
 
+### Running the Development Environments
 Run the back end. This will run in watch mode by default.
 ```bash
 cd workos-backend

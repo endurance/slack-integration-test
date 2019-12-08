@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
-import { UserService } from "../services/user.service";
+import { UserService } from "../../services/user-service/user.service";
 
 interface SlackEvent {
   token: string,
@@ -21,11 +21,7 @@ export class UserController {
   
   @Get("/list")
   public async getUsers() {
-    const users = await this._userService.getUsers();
-    if (!users || users.length === 0) {
-      return await this._userService.syncUsers();
-    }
-    return users;
+    return await this._userService.getUsers();
   }
   
 }

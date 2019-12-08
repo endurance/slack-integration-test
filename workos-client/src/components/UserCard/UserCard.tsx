@@ -12,7 +12,6 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { ProfileDetails } from "../ProfileDetails";
 import classnames from "classnames";
 import { UserDTO } from "../../dto/user.dto";
-import moment from "moment";
 
 type Props = {
   user: UserDTO;

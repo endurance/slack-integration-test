@@ -1,10 +1,10 @@
 import { InjectConnection, InjectRepository } from "@nestjs/typeorm";
-import { UserEntity } from "../../db/entities/user.entity";
+import { UserEntity } from "../../../db/entities/user.entity";
 import { Connection, EntityManager, In, Repository } from "typeorm";
 import { Injectable, Logger } from "@nestjs/common";
 import { plainToClass } from "class-transformer";
-import { SlackClientService } from "./slack-client.service";
-import { ProfileEntity } from "../../db/entities/profile.entity";
+import { SlackClientService } from "../slack-client-service/slack-client.service";
+import { ProfileEntity } from "../../../db/entities/profile.entity";
 
 @Injectable()
 export class UserService {
@@ -22,7 +22,7 @@ export class UserService {
     return await this._userRepo.find();
   }
   
-  public async findUsersBySlackIds(slackIds) {
+  public async findUsersBySlackIds(slackIds: string[]) {
     return await this._userRepo.find({
       where: {
         slack_id: In(slackIds),
@@ -30,7 +30,7 @@ export class UserService {
     });
   }
   
-  public async findOneUserBySlackId(slack_id) {
+  public async findOneUserBySlackId(slack_id: string) {
     return await this._userRepo.findOne({
       where: {
         slack_id,
@@ -43,16 +43,16 @@ export class UserService {
     rawUserData.slack_id = slack_id;
     delete rawUserData.id;
     
-    this._logger.log(`Working with Slack ID ${slack_id}`);
+    this._logger.log(`Working with Slack ID ${slack_id}`, 'UserService');
     const dbUser = await this.findOneUserBySlackId(slack_id);
     
     await this._db.transaction(async (em) => {
       if (dbUser) {
-        this._logger.log(`Updating Slack ID ${slack_id}`);
+        this._logger.log(`Updating Slack ID ${slack_id}`, 'UserService');
         rawUserData.profile.id = dbUser.profile.id;
         await this._updateUser(em, [rawUserData]);
       } else {
-        this._logger.log(`Saving for Slack ID ${slack_id}`);
+        this._logger.log(`Saving for Slack ID ${slack_id}`, 'UserService');
         await em.save(UserEntity, rawUserData);
       }
     });

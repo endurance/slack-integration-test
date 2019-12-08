@@ -1,7 +1,7 @@
-import * as dotenv from 'dotenv';
-import * as fs from 'fs';
-import { Inject, Injectable } from '@nestjs/common';
-import { Datastore } from '@google-cloud/datastore';
+import * as dotenv from "dotenv";
+import * as fs from "fs";
+import { Inject, Injectable } from "@nestjs/common";
+import { Datastore } from "@google-cloud/datastore";
 
 export class ConfigOptions {
   filePath: string;
@@ -10,33 +10,18 @@ export class ConfigOptions {
 
 @Injectable()
 export class ConfigService {
-  private readonly envPath = `${process.env.NODE_ENV || 'development'}.env`;
+  private readonly envPath = `${process.env.NODE_ENV || "development"}.env`;
   private envConfig: Record<string, string>;
   private readonly protectedKeys: string[] = [];
   private readonly datastore: Datastore;
-
-  constructor(@Inject('CONFIG_OPTIONS') options= new ConfigOptions()) {
-    const { filePath, protectedKeys } = options;
+  
+  constructor(
+    @Inject("CONFIG_OPTIONS") options = new ConfigOptions()
+  ) {
+    const {filePath, protectedKeys} = options;
     this._parseCfg(filePath);
-    this.datastore = new Datastore({ namespace: this.getSync('ENV_SECRET_NAMESPACE') });
+    this.datastore = new Datastore({namespace: this.getSync("ENV_SECRET_NAMESPACE")});
     this.protectedKeys = protectedKeys || [];
-    console.log(this.envConfig);
-  }
-
-  private _parseCfg(filePath) {
-    if (filePath) {
-      this.envConfig = dotenv.parse(fs.readFileSync(filePath));
-    } else {
-      this.envConfig = dotenv.parse(fs.readFileSync(this.envPath));
-    }
-    if (this.isDevelopmentEnv()) {
-      const localCfg = dotenv.parse(fs.readFileSync(`${this.envPath}.local`));
-      this.envConfig = {
-        ...this.envConfig,
-        ...localCfg,
-        
-      }
-    }
   }
   
   async get(key: string) {
@@ -49,63 +34,79 @@ export class ConfigService {
     }
     return this.envConfig[key];
   }
-
+  
   public getSync = (key: string) => {
     return this.envConfig[key];
-  }
-
+  };
+  
   public getEnv = () => {
-    return process.env.NODE_ENV || 'development';
-  }
-
+    return process.env.NODE_ENV || "development";
+  };
+  
   public isNotProduction = () => {
-    return this.getEnv() !== 'production';
-  }
-
+    return this.getEnv() !== "production";
+  };
+  
   public isProduction = () => {
-    return this.getEnv() === 'production';
-  }
-
+    return this.getEnv() === "production";
+  };
+  
   public isStaging = () => {
-    return this.getEnv() === 'staging';
-  }
-
+    return this.getEnv() === "staging";
+  };
+  
   public isNotStaging = () => {
     return !this.isStaging();
-  }
-
+  };
+  
   public isDeployedEnv = () => {
     return this.isProduction() || this.isStaging();
-  }
-
+  };
+  
   public isNotDeployedEnv = () => {
     return !this.isDeployedEnv();
-  }
-
+  };
+  
   public isDevelopmentEnv = () => {
-    return this.getEnv() === 'development';
-  }
-
+    return this.getEnv() === "development";
+  };
+  
   public isNotDevelopmentEnv = () => {
     return !this.isDevelopmentEnv();
-  }
-
+  };
+  
   public isTestingEnv = () => {
-    return this.getEnv() === 'test';
-  }
-
+    return this.getEnv() === "test";
+  };
+  
   public isNotTestingEnv = () => {
     return !this.isTestingEnv();
+  };
+  
+  private _parseCfg(filePath) {
+    if (filePath) {
+      this.envConfig = dotenv.parse(fs.readFileSync(filePath));
+    } else {
+      this.envConfig = dotenv.parse(fs.readFileSync(this.envPath));
+    }
+    if (this.isDevelopmentEnv()) {
+      const localCfg = dotenv.parse(fs.readFileSync(`${this.envPath}.local`));
+      this.envConfig = {
+        ...this.envConfig,
+        ...localCfg,
+        
+      };
+    }
   }
-
+  
   private async _getProtectedValue(name) {
     // The kind for the new entity
-    const kind = await this.get('ENV_SECRET_KIND');
+    const kind = await this.get("ENV_SECRET_KIND");
     const companyQuery = this.datastore.createQuery(kind);
     const env = this.getEnv();
     // Only retrieve the name property.
     const [entity] = await companyQuery
-      .filter('ENV', env)
+      .filter("ENV", env)
       .run();
     const [entityValue] = entity;
     return entityValue[name];

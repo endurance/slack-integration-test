@@ -1,5 +1,5 @@
 import { Controller, Get } from "@nestjs/common";
-import { SlackClientService } from "../services/slack-client.service";
+import { SlackClientService } from "../../services/slack-client-service/slack-client.service";
 
 @Controller("/slack")
 export class SlackController {
