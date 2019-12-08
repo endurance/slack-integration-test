@@ -5,13 +5,14 @@ import {
   CardHeader,
   ExpansionPanel,
   ExpansionPanelDetails,
-  ExpansionPanelSummary,
-  makeStyles,
+  ExpansionPanelSummary, FormLabel,
+  makeStyles, Typography,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { ProfileDetails } from "../ProfileDetails";
 import classnames from "classnames";
 import { UserDTO } from "../../dto/user.dto";
+import moment from "moment";
 
 type Props = {
   user: UserDTO;
@@ -24,10 +25,16 @@ const useStyles = makeStyles({
   container: {
     width: 384,
   },
+  updatedStyle: {
+    fontSize: 12,
+  },
+  updatedLabel: {
+    fontSize: 12
+  }
 });
 
 export const UserCard = ({user}: Props) => {
-  const {disabled, container} = useStyles();
+  const {disabled, container, updatedStyle, updatedLabel} = useStyles();
   const disabledClass = user.deleted && disabled;
   const testId = `usercard-${user.id}`;
   return (
@@ -39,6 +46,10 @@ export const UserCard = ({user}: Props) => {
             title={user.real_name}
             subheader={user.profile.status_text}
           />
+          <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} ml={'auto'}>
+            <FormLabel className={updatedLabel}>Last Updated</FormLabel>
+            <Typography className={updatedStyle}>{new Date(user.updated * 1000).toLocaleDateString()}</Typography>
+          </Box>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <ProfileDetails user={user}/>
