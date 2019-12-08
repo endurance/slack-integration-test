@@ -5,8 +5,10 @@ import {
   CardHeader,
   ExpansionPanel,
   ExpansionPanelDetails,
-  ExpansionPanelSummary, FormLabel,
-  makeStyles, Typography,
+  ExpansionPanelSummary,
+  FormLabel,
+  makeStyles,
+  Typography,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { ProfileDetails } from "../ProfileDetails";
@@ -28,9 +30,16 @@ const useStyles = makeStyles({
     fontSize: 12,
   },
   updatedLabel: {
-    fontSize: 12
-  }
+    fontSize: 12,
+  },
 });
+
+const formatDateString = (updated: number): Date | string => {
+  if (updated === 0) {
+    return "N/A";
+  }
+  return new Date(updated * 1000).toLocaleDateString();
+};
 
 export const UserCard = ({user}: Props) => {
   const {disabled, container, updatedStyle, updatedLabel} = useStyles();
@@ -45,9 +54,9 @@ export const UserCard = ({user}: Props) => {
             title={user.real_name}
             subheader={user.profile.status_text}
           />
-          <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} ml={'auto'}>
+          <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} ml={"auto"}>
             <FormLabel className={updatedLabel}>Last Updated</FormLabel>
-            <Typography className={updatedStyle}>{new Date(user.updated * 1000).toLocaleDateString()}</Typography>
+            <Typography className={updatedStyle}>{formatDateString(user.updated)}</Typography>
           </Box>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>

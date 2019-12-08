@@ -23,7 +23,7 @@ RUN cd workos-client && npm install --unsafe-perm || \
       cat npm-debug.log; \
     fi) && false)
 
-RUN npm install -g @nestjs/cli@6.11.1
+RUN npm install -g @nestjs/cli
 RUN cd workos-backend && npm run build
 RUN cd workos-client && npm run build
 RUN cp -R workos-client/build workos-backend/dist
