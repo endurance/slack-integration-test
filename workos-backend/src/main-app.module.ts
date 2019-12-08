@@ -9,7 +9,7 @@ import { join } from "path";
     DatabaseModule,
     SlackModule,
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, "..", "build"),
+      rootPath: join(__dirname, "build"),
     }),
   ],
 })
