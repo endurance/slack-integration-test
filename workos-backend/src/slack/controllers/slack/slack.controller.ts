@@ -1,4 +1,5 @@
-import { Controller, Get } from "@nestjs/common";
+import
+{ Controller, Get } from "@nestjs/common";
 import { SlackClientService } from "../../services/slack-client-service/slack-client.service";
 
 @Controller("/slack")
@@ -11,5 +12,10 @@ export class SlackController {
   @Get("/list")
   public async allUsers() {
     return await this._slackClient.users.list();
+  }
+  
+  @Get('/team')
+  public async teamName() {
+    return await this._slackClient.team.info();
   }
 }

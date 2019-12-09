@@ -17,7 +17,8 @@ describe("User Card Unit Test", () => {
     const {getByTestId} = render(
       <UserCard user={userDTO}/>,
     );
-  
+    
+    // Find disabled class - simple way of determining if the card is disabled
     expect(getByTestId('usercard-1').className).toContain('makeStyles-disabled');
   });
 });

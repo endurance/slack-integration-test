@@ -20,11 +20,11 @@ type Props = {
 }
 
 const useStyles = makeStyles({
-  disabled: {
-    opacity: .3,
-  },
   container: {
     width: 384,
+  },
+  disabled: {
+    opacity: .3,
   },
   updatedStyle: {
     fontSize: 12,

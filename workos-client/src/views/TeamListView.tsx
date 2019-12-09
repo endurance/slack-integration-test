@@ -1,28 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { Box } from "@material-ui/core";
-import { getUsers, syncUsers } from "../services/user.service";
+import { getTeam, getUsers, syncUsers } from "../services/user.service";
 import { UserCardList } from "../components/UserCardList/UserCardList";
 import { appSocket } from "../appSocket";
 import { UserDTO } from "../dto/user.dto";
+import { Box, makeStyles, Typography } from "@material-ui/core";
+import { TeamDTO } from "../dto/team.dto";
+
+const useStyles = makeStyles({
+  title: {
+    fontSize: 32,
+  },
+});
 
 export const TeamListView = () => {
-  
+  const {title} = useStyles();
   const [users, setUsers] = useState<UserDTO[]>([]);
+  const [team, setTeam] = useState<TeamDTO>();
   // useCallback used here so that we do not recreate this function.
-  const retrieveUsers = React.useCallback(async () => {
-    // called every time the server emits a user_changed event
-    const users = await getUsers();
-    setUsers(users);
-  }, []);
+  // this allows me to unregister this function on clean up
+  const retrieveUsers = React.useCallback(
+    async () => {
+      const users = await getUsers();
+      setUsers(users);
+    }, []);
   
   async function didMount() {
     await syncUsers();
     await retrieveUsers();
+    const t = await getTeam();
+    setTeam(t);
+    // called every time the server emits a user_changed event
     appSocket.on("user_changed", retrieveUsers);
   }
   
   useEffect(() => {
     didMount();
+    // Cleanup the retreiveUsers function
     return () => {
       appSocket.removeListener("user_changed", retrieveUsers);
     };
@@ -33,7 +46,8 @@ export const TeamListView = () => {
   }, []);
   
   return (
-    <Box width={800}>
+    <Box>
+      <Typography component={"h1"} align={"center"} className={title}>Welcome to {team?.name}</Typography>
       <UserCardList users={users}/>
     </Box>
   );

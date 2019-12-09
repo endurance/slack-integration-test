@@ -15,34 +15,34 @@ export const ProfileDetails = ({user}: Props) => {
       <ContentGroup mr={2} pl={2}>
         <LabelGroup mb={2}>
           <FormLabel>Username</FormLabel>
-          <Typography>{user.name}</Typography>
+          <Typography data-testid={'username'}>{user.name}</Typography>
         </LabelGroup>
   
         <LabelGroup mb={2}>
           <FormLabel>Display Name</FormLabel>
-          <Typography>{user.profile.display_name || "N/A"}</Typography>
+          <Typography data-testid={'displayName'}>{user.profile.display_name || "N/A"}</Typography>
         </LabelGroup>
   
         <LabelGroup mb={2}>
           <FormLabel>Is Admin</FormLabel>
-          <Typography>{user.is_admin ? "Yes" : "No"}</Typography>
+          <Typography data-testid={'isAdmin'}>{user.is_admin ? "Yes" : "No"}</Typography>
         </LabelGroup>
       </ContentGroup>
       
       <ContentGroup>
         <LabelGroup mb={2}>
           <FormLabel>Title</FormLabel>
-          <Typography>{user.profile.title || "N/A"}</Typography>
+          <Typography data-testid={'title'}>{user.profile.title || "N/A"}</Typography>
         </LabelGroup>
   
         <LabelGroup mb={2}>
           <FormLabel>Phone</FormLabel>
-          <Typography>{user.profile.phone || "N/A"}</Typography>
+          <Typography data-testid={'phone'}>{user.profile.phone || "N/A"}</Typography>
         </LabelGroup>
         
         <LabelGroup mb={2}>
           <FormLabel>Timezone</FormLabel>
-          <Typography>{user.tz_label || "N/A"}</Typography>
+          <Typography data-testid={'tzLabel'}>{user.tz_label || "N/A"}</Typography>
         </LabelGroup>
       </ContentGroup>
       
