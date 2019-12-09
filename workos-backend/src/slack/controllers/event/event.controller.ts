@@ -31,7 +31,7 @@ export class EventController {
       const userData = body.event.user as UserEntity;
       try {
         const savedUser = await this._userService.saveRawUser(userData);
-        return this._eventGateway.userChanged(savedUser);
+        this._eventGateway.userChanged(savedUser);
       } catch(e) {
         this._logger.error('Failed to save user!', 'EventController');
         throw e;

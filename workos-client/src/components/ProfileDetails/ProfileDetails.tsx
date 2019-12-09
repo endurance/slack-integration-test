@@ -1,8 +1,9 @@
 import React from "react";
 import { Box, FormLabel, Typography } from "@material-ui/core";
+import { UserDTO } from "../../dto/user.dto";
 
 type Props = {
-  user: any
+  user: UserDTO
 }
 
 export const ProfileDetails = ({user}: Props) => {

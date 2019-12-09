@@ -1,6 +1,6 @@
 import React from 'react';
-import { UserCard } from "./UserCard/UserCard";
-import { UserDTO } from "../dto/user.dto";
+import { UserCard } from "../UserCard/UserCard";
+import { UserDTO } from "../../dto/user.dto";
 
 type Props = {
   users: UserDTO[];

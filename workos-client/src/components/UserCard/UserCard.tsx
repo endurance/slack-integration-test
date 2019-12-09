@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { ProfileDetails } from "../ProfileDetails";
+import { ProfileDetails } from "../ProfileDetails/ProfileDetails";
 import classnames from "classnames";
 import { UserDTO } from "../../dto/user.dto";
 
