@@ -41,3 +41,11 @@ Run the front end. This will be in watch mode by default.
 cd workos-client
 npm start
 ```
+
+### Production URL
+
+https://endurance-test-ca1fb.appspot.com/
+
+### Production URL
+
+https://projectgetinmybelly.slack.com/
