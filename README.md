@@ -1,3 +1,6 @@
+Circle CI Status
+
+[![CircleCI](https://circleci.com/gh/endurance/slack-integration-test/tree/master.svg?style=svg)](https://circleci.com/gh/endurance/slack-integration-test/tree/master)
 
 ## General Environment Setup
 Setup your database. Docker/Docker-Compose must be installed.
