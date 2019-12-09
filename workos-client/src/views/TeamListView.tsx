@@ -45,7 +45,7 @@ export const TeamListView = () => {
   // Component data management use effect
   useEffect(() => {
     didMount();
-    // Cleanup the retreiveUsers function
+    // Cleanup the loadUsers function
     return () => {
       socket.removeListener("user_changed", loadUsers);
     };
