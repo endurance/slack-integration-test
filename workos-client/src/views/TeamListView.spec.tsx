@@ -25,7 +25,7 @@ describe('Team List View', () => {
     const titleElement = await findByTestId('TeamListView-title');
     
     // Validate that we see the team
-    expect(titleElement.innerHTML).toBe("Welcome to TEST WORKSPACE");
+    expect(titleElement.innerHTML).toBe("Users for TEST WORKSPACE");
     // Validate that we see the user_change event being hooked into.
     verify(socketMock.on('user_changed', anything())).called()
   });
