@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { getTeam, getUsers, syncUsers } from "../services/user.service";
+import { UserDataService } from "../services/user.service";
 import { UserCardList } from "../components/UserCardList/UserCardList";
-import { appSocket } from "../appSocket";
+import { AppSocket } from "../appSocket";
 import { UserDTO } from "../dto/user.dto";
 import { Box, makeStyles, Typography } from "@material-ui/core";
 import { TeamDTO } from "../dto/team.dto";
@@ -12,42 +12,51 @@ const useStyles = makeStyles({
   },
 });
 
+// A note about React Deps on useEffect
+// In this component, these functions will not change so this lint rule is not necessary.
+// If "in the future" that it might change, I want to actively decide how the
+// component should work.
+
 export const TeamListView = () => {
   const {title} = useStyles();
   const [users, setUsers] = useState<UserDTO[]>([]);
   const [team, setTeam] = useState<TeamDTO>();
+  // new socket will be created on initial render
+  const [socket] = useState(() => AppSocket.createNew());
   // useCallback used here so that we do not recreate this function.
   // this allows me to unregister this function on clean up
-  const retrieveUsers = React.useCallback(
+  const loadUsers = React.useCallback(
     async () => {
-      const users = await getUsers();
+      const users = await UserDataService.getUsers();
       setUsers(users);
     }, []);
   
   async function didMount() {
-    await syncUsers();
-    await retrieveUsers();
-    const t = await getTeam();
-    setTeam(t);
-    // called every time the server emits a user_changed event
-    appSocket.on("user_changed", retrieveUsers);
+    await loadUsers();
+    setTeam(await UserDataService.getTeam());
   }
   
+  // Socket management use effect
+  useEffect(() => {
+    socket.on("user_changed", loadUsers);
+    // eslint-disable-next-line
+  }, []);
+  
+  // Component data management use effect
   useEffect(() => {
     didMount();
     // Cleanup the retreiveUsers function
     return () => {
-      appSocket.removeListener("user_changed", retrieveUsers);
+      socket.removeListener("user_changed", loadUsers);
     };
-    // These functions will not change so this lint rule is not necessary.
-    // If "in the future" that it might change, I want to actively decide how the
-    // component should work.
     // eslint-disable-next-line
   }, []);
   
   return (
     <Box>
-      <Typography component={"h1"} align={"center"} className={title}>Welcome to {team?.name}</Typography>
+      <Typography data-testid={"TeamListView-title"} component={"h1"} align={"center"} className={title}>
+        Welcome to {team?.name}
+      </Typography>
       <UserCardList users={users}/>
     </Box>
   );

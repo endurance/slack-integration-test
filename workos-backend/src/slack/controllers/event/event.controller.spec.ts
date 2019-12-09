@@ -27,7 +27,8 @@ describe('EventController Unit Test', () => {
     });
     
     await controllerInstanceToTest.receive(slackEvent);
-  
+    // Ensure that the gateway calls userChanged which tests Socket Update functionality passively
+    // A more direct test would be a way to do this end to end with a test slack workspace
     verify(eventGatewayMock.userChanged(anything())).called();
   });
   
