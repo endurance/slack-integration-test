@@ -52,12 +52,17 @@ export const TeamListView = () => {
     // eslint-disable-next-line
   }, []);
   
+  const ViewContainer = Box;
+  const Title = Box;
+  
   return (
-    <Box>
-      <Typography data-testid={"TeamListView-title"} component={"h1"} align={"center"} className={title}>
-        Welcome to {team?.name}
-      </Typography>
+    <ViewContainer mt={4}>
+      <Title mb={1}>
+        <Typography data-testid={"TeamListView-title"} component={"h1"} align={"center"} className={title}>
+          Users for {team?.name}
+        </Typography>
+      </Title>
       <UserCardList users={users}/>
-    </Box>
+    </ViewContainer>
   );
 };
