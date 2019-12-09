@@ -46,6 +46,6 @@ npm start
 
 https://endurance-test-ca1fb.appspot.com/
 
-### Production URL
+### Slack Workspace
 
 https://projectgetinmybelly.slack.com/
