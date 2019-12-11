@@ -2,7 +2,7 @@ import { InjectConnection, InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "../../../db/entities/user.entity";
 import { Connection, EntityManager, In, Repository } from "typeorm";
 import { Injectable, Logger } from "@nestjs/common";
-import { plainToClass } from "class-transformer";
+import { classToClass, plainToClass } from "class-transformer";
 import { SlackClientService } from "../slack-client-service/slack-client.service";
 import { ProfileEntity } from "../../../db/entities/profile.entity";
 import { ObjectType } from "typeorm/common/ObjectType";
@@ -32,11 +32,7 @@ export class UserService {
   }
   
   public async findOneUserBySlackId(slack_id: string) {
-    return await this._userRepo.findOne({
-      where: {
-        slack_id,
-      },
-    });
+    return await this._userRepo.findOne({ slack_id });
   }
   
   public async saveRawUser(rawUserData: UserEntity) {
@@ -89,8 +85,10 @@ export class UserService {
   
   private async _updateUser(em: EntityManager, entities: UserEntity[]) {
     for (const u of entities) {
-      await em.update(UserEntity, {slack_id: u.slack_id}, u);
-      await em.update(ProfileEntity, {id: u.profile.id}, u.profile);
+      const user = plainToClass(UserEntity, u, { excludeExtraneousValues: true });
+      await em.update(UserEntity, {slack_id: u.slack_id}, user);
+      const profile = classToClass(u.profile, { excludeExtraneousValues: true });
+      await em.update(ProfileEntity, {id: u.profile.id}, profile);
     }
   }
   
