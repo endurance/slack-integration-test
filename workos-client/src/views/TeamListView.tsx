@@ -36,6 +36,10 @@ export const TeamListView = () => {
     setTeam(await UserDataService.getTeam());
   }
   
+  useEffect(() => {
+    document.title = team?.name || document.title;
+  }, [team]);
+  
   // Socket management use effect
   useEffect(() => {
     socket.on("user_changed", loadUsers);

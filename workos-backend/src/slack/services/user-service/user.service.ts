@@ -5,6 +5,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { plainToClass } from "class-transformer";
 import { SlackClientService } from "../slack-client-service/slack-client.service";
 import { ProfileEntity } from "../../../db/entities/profile.entity";
+import { ObjectType } from "typeorm/common/ObjectType";
 
 @Injectable()
 export class UserService {

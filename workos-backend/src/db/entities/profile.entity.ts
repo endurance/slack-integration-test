@@ -87,5 +87,6 @@ export class ProfileEntity {
   team: string;
   
   @Column({ nullable: true })
-  api_app_id: string
+  api_app_id: string;
+  
 }
